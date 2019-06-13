@@ -100,19 +100,16 @@ class Add_user(Resource):
 		return 'ok',200
 
 class Xue_ya(Resource):
-	def get(self):
-		args = parser.parse_args()
-		args = args['id']
-		result = Xy.query.filter_by(u_id=args).all()  # 条件查询
-		name = User.query.filter_by(id=args).first()
-		# print(type(args))
-		# role1 = Xy.query.get(args)
-		# print(result)
-		# user_list = User.query.get(result.id)
-		# print(user_list)
+	def get(self, id):
+		# args = parser.parse_args()
+		# args = args['id']
+		# result = Xy.query.filter_by(u_id=args).all()  # 条件查询
+		# name = User.query.filter_by(id=args).first()
+		result = Xy.query.filter_by(u_id=id).all()  # 条件查询
+		name = User.query.filter_by(id=id).first()
 		return '{} {}'.format(name, result)
 
-	def post(self):
+	def put(self):
 		args = parser.parse_args()
 		data1 = Xy(u_id=args['id'], low=args['low'], hig=args['hig'], x_date=time.strftime('%Y-%m-%d %H:%M:%S'))
 		db.session.add(data1)
@@ -128,7 +125,7 @@ class Xue_tang(Resource):
 		name = User.query.filter_by(id=args).first()
 		return '{} {}'.format(name, result)
 
-	def post(self):
+	def put(self):
 		args = parser.parse_args()
 		data2 = Xt(u_id=args['id'], xt=args['xuet'], x_date=time.strftime('%Y-%m-%d %H:%M:%S'))
 		db.session.add(data2)
@@ -144,7 +141,8 @@ class ti_zhong(Resource):
 	pass
 
 api.add_resource(Add_user, '/adduser')  # http://127.0.0.1:5000/adduser?name=wy&id=22349822&age=341&sex=f&addr=北京顺建新北区&tel=18623327
-api.add_resource(Xue_ya, '/xueya')      # http://127.0.0.1:5000/xueya?id=100&low=90&hig=120
+# api.add_resource(Xue_ya, '/xueya')      # http://127.0.0.1:5000/xueya?id=100&low=90&hig=120  第一种方法
+api.add_resource(Xue_ya, '/xueya/<id>') # http://127.0.0.1:5000/xueya/100 第二种方法
 api.add_resource(Xue_tang, '/xuetang')  # http://127.0.0.1:5000/xuetang?id=100&xt=85
 api.add_resource(men_suo, '/mensuo')    # http://127.0.0.1:5000/mensuo?=100&flag=off/on
 api.add_resource(xin_lv, '/xinlv')      # http://127.0.0.1:5000/xuetang?=100&lv=85
