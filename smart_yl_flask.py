@@ -23,6 +23,7 @@ def reg_args():
 	parser.add_argument('name')
 	parser.add_argument('id')
 	parser.add_argument('sex')
+	parser.add_argument('sg')
 	parser.add_argument('age')
 	parser.add_argument('addr')
 	parser.add_argument('tel')
@@ -39,6 +40,7 @@ class User(db.Model):
 	name = db.Column(db.String(255))
 	sex = db.Column(db.String(4))
 	age = db.Column(db.Integer)
+	sg = db.Column(db.Integer)
 	addr = db.Column(db.String(64))
 	tel = db.Column(db.String(11))
 	date_c = db.Column(db.DateTime)
@@ -91,6 +93,7 @@ class Add_user(Resource):
 		            id=args['id'],
 		            sex=args['sex'],
 		            age=args['age'],
+		            sg=args['sg'],
 		            addr=args['addr'],
 		            tel=args['tel'],
 		            date_c=time.strftime('%Y-%m-%d %H:%M:%S'))
@@ -137,6 +140,8 @@ class men_suo(Resource):
 	pass
 class xin_lv(Resource):
 	pass
+class xin_dian(Resource):
+	pass
 class ti_zhong(Resource):
 	pass
 
@@ -146,7 +151,8 @@ api.add_resource(Xue_ya, '/xueya/<id>') # http://127.0.0.1:5000/xueya/100 第二
 api.add_resource(Xue_tang, '/xuetang')  # http://127.0.0.1:5000/xuetang?id=100&xt=85
 api.add_resource(men_suo, '/mensuo')    # http://127.0.0.1:5000/mensuo?=100&flag=off/on
 api.add_resource(xin_lv, '/xinlv')      # http://127.0.0.1:5000/xuetang?=100&lv=85
-api.add_resource(ti_zhong, '/tizhong')   # http://127.0.0.1:5000/tizhong?=100&zhong=85
+api.add_resource(xin_dian, '/xindian')  # http://127.0.0.1:5000/xindian?id=100&P=*&QPS=*&P-R=*&QT/QTc=*&QRS电轴=*&RV5/SV1=*
+api.add_resource(ti_zhong, '/tizhong')  # http://127.0.0.1:5000/tizhong?=100&zhong=85
 
 if __name__ == '__main__':
 	reg_args()
