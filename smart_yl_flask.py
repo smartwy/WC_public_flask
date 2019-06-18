@@ -58,18 +58,20 @@ class Xy(db.Model):
 	hig = db.Column(db.Integer)
 	low = db.Column(db.Integer)
 	x_date = db.Column(db.DateTime)
+	status = db.Column(db.String(255))
 	def __repr__(self):
-		return 'id:%s, hig:%s, low:%s, x_date:%s' % (self.u_id,self.hig,self.low,self.x_date)
+		return 'id:%s, hig:%s, low:%s, x_date:%s status:%s' % (self.u_id,self.hig,self.low,self.x_date, self.status)
 
 class Xt(db.Model):
 	__tablename__ = 'Xt'
 	__table_args__ = {'mysql_collate': 'utf8_general_ci'}
 	number = db.Column(db.Integer, autoincrement=True, primary_key=True) # 需要使用__tablename__参数指定表名
 	u_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=True)
-	xt = db.Column(db.Integer)
+	xt = db.Column(db.Float)
 	x_date = db.Column(db.DateTime)
+	status = db.Column(db.String(255))
 	def __repr__(self):
-		return 'id:%s, xt:%s, x_date:%s' % (self.u_id, self.xt, self.x_date)
+		return 'id:%s, xt:%s, x_date:%s status:%s' % (self.u_id, self.xt, self.x_date, self.status)
 
 # 多对多表设置示例：
 # tags = db.Table('tags',
@@ -103,18 +105,20 @@ class Add_user(Resource):
 		return 'ok',200
 
 class Xue_ya(Resource):
-	def get(self, id):
-		# args = parser.parse_args()
-		# args = args['id']
-		# result = Xy.query.filter_by(u_id=args).all()  # 条件查询
-		# name = User.query.filter_by(id=args).first()
-		result = Xy.query.filter_by(u_id=id).all()  # 条件查询
-		name = User.query.filter_by(id=id).first()
+	def get(self):
+		args = parser.parse_args()
+		args = args['id']
+		result = Xy.query.filter_by(u_id=args).all()  # 条件查询
+		name = User.query.filter_by(id=args).first()
+		# result = Xy.query.filter_by(u_id=id).all()  # 条件查询
+		# name = User.query.filter_by(id=id).first()
 		return '{} {}'.format(name, result)
 
 	def put(self):
 		args = parser.parse_args()
-		data1 = Xy(u_id=args['id'], low=args['low'], hig=args['hig'], x_date=time.strftime('%Y-%m-%d %H:%M:%S'))
+		# 和正常数据对比，结果存在 status字段内 status='result'
+		result = '血压状态良好，继续保持。'
+		data1 = Xy(u_id=args['id'], low=args['low'], hig=args['hig'], x_date=time.strftime('%Y-%m-%d %H:%M:%S'), status=result)
 		db.session.add(data1)
 		db.session.commit()
 		db.session.close()
@@ -130,7 +134,14 @@ class Xue_tang(Resource):
 
 	def put(self):
 		args = parser.parse_args()
-		data2 = Xt(u_id=args['id'], xt=args['xuet'], x_date=time.strftime('%Y-%m-%d %H:%M:%S'))
+		# 和正常数据对比，结果存在 status字段内 status='result'
+		if float(args['xuet']) > 6.1:
+			result = '血糖偏高，建议增加运动，少食含糖量高的食物。'
+		elif float(args['xuet']) < 3.9:
+			result = '血糖偏低，多食含糖量高的食物。'
+		else:
+			result = '血糖状态良好，继续保持。'
+		data2 = Xt(u_id=args['id'], xt=args['xuet'], x_date=time.strftime('%Y-%m-%d %H:%M:%S'), status=result)
 		db.session.add(data2)
 		db.session.commit()
 		db.session.close()
@@ -138,19 +149,21 @@ class Xue_tang(Resource):
 
 class men_suo(Resource):
 	pass
-class xin_lv(Resource):
-	pass
+
 class xin_dian(Resource):
+	# s1 = '3.90mog/s' # 6个参数过来，分切出来
+	# print(s1.strip('mog/s'))  # 默认删除空格
+	# print(s1.split('mog/s'))  # 指定切割符
 	pass
 class ti_zhong(Resource):
 	pass
 
 api.add_resource(Add_user, '/adduser')  # http://127.0.0.1:5000/adduser?name=wy&id=22349822&age=341&sex=f&addr=北京顺建新北区&tel=18623327
-# api.add_resource(Xue_ya, '/xueya')      # http://127.0.0.1:5000/xueya?id=100&low=90&hig=120  第一种方法
-api.add_resource(Xue_ya, '/xueya/<id>') # http://127.0.0.1:5000/xueya/100 第二种方法
+api.add_resource(Xue_ya, '/xueya')      # http://127.0.0.1:5000/xueya?id=100&low=90&hig=120  第一种方法
+# api.add_resource(Xue_ya, '/xueya/<id>') # http://127.0.0.1:5000/xueya/100 第二种方法
 api.add_resource(Xue_tang, '/xuetang')  # http://127.0.0.1:5000/xuetang?id=100&xt=85
 api.add_resource(men_suo, '/mensuo')    # http://127.0.0.1:5000/mensuo?=100&flag=off/on
-api.add_resource(xin_lv, '/xinlv')      # http://127.0.0.1:5000/xuetang?=100&lv=85
+# api.add_resource(xin_lv, '/xinlv')      # http://127.0.0.1:5000/xuetang?=100&lv=85 和心电一起
 api.add_resource(xin_dian, '/xindian')  # http://127.0.0.1:5000/xindian?id=100&P=*&QPS=*&P-R=*&QT/QTc=*&QRS电轴=*&RV5/SV1=*
 api.add_resource(ti_zhong, '/tizhong')  # http://127.0.0.1:5000/tizhong?=100&zhong=85
 
