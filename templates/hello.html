@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+   <body>
+{% if data %}
+<h2>{{ data | addinfo }}</h2>
+{% endif %}
+      <form action = "http://localhost:5000/hello" method = "post">
+         <p>Enter Name:</p>
+         <p><input type = "text" name = "nm" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+
+   </body>
+</html>

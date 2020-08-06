@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flask SQLAlchemy</title>
+</head>
+<body style="text-align: center">
+    <table style="margin: 0 auto" border="1" >
+        <thead>
+            <TR>
+                <TH>学号</TH>
+                <TH>姓名</TH>
+                <TH>城市</TH>
+                <TH>地址</TH>
+                <TH>电话</TH>
+                <th>操作</th>
+            </TR>
+        </thead>
+        <tbody>
+            {% for j in result %}
+                <tr>
+                <td>{{ j.id }}</td>
+                <td>{{ j.name }}</td>
+                <td>{{ j.city }}</td>
+                <td>{{ j.addr }}</td>
+                <td>{{ j.tel }}</td>
+                 <td><form action="/delurl" method="post">
+            <p><input style="display: none" type="text" name="del" value={{ j.id }}></p>
+            <p><input type="submit" value="删除"></p>
+        </form></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+      <form action = "/" method = "post">
+            <p>输入新生信息:</p>
+            <p>学号：<input type = "text" name = "id" /></p>
+            <p>姓名：<input type = "text" name = "name" /></p>
+            <p>城市：<input type = "text" name = "city" /></p>
+            <p>地址：<input type = "text" name = "addr" /></p>
+            <p>电话：<input type = "text" name = "tel" /></p>
+            <p><input type = "submit" value = "提交" /></p>
+      </form>
+<form action="/bp">
+    <p><input type="submit" value="to蓝图"></p>
+</form>
+</body>
+</html>
